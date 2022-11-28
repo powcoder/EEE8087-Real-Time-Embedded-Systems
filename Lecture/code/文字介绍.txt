@@ -1,0 +1,81 @@
+https://powcoder.com
+代写代考加微信 powcoder
+Assignment Project Exam Help
+Add WeChat powcoder
+https://powcoder.com
+代写代考加微信 powcoder
+Assignment Project Exam Help
+Add WeChat powcoder
+Code used in lectures -- try it at home!
+Please feel free to experiment with the examples of code discussed in the lectures. The source code is attached in order to save your time. All examples can be run from Cygwin (free package for M$ Windows), Linux or Unix. This is not an assessed assignment, but "only" a useful exercise that will improve your understanding of the subject and help you to develop the appropriate skills.
+
+Examples with processes, code in shell script, X-windows interface is required (run Xming under Windows, Linux/Unix have X11 available by default).
+
+1. Choice-merge with processes, shell script (user specified choice option, no concurrency)
+
+source choice-merge.sh
+
+2. Fork-join with processes, shell script
+
+source fork_join.sh
+
+3. Fork concurrent processes in C
+
+gcc runls3.c -o runls3
+./runls3
+
+4.  Fork-join with threads
+
+gcc pthread1.c -lpthread -o pthread1
+./pthread1
+
+5. Usefulness of mutexes
+
+(a) a mutex is used --> correct result; the counter reaches the max count (200000); in different runs the threads may finish in different orders. Run the programme several times and observe the result.
+
+gcc mutex1.c -lpthread -o mutex1
+./mutex1
+
+(b) the same example, but the critical sections are removed --> errors; the counter never reaches the max count, because count++ is not an atomic operation. It copies the variable into the CPU's register, then increments it, then copies it back. The interrupted thread, which has already copied the variable into the register, puts it back into the RAM much later, thus overwriting the results of the interrupting thread. Run the programme several times and observe the result.
+
+gcc mutex1_bad.c -lpthread -o mutex1_bad
+./mutex_bad
+
+You may try looking at the assembly code, which is the intermediate stage of the compilation process. One can see that the function count++ is represented as many assembly-level instructions. Hence, it is not an atomic action! The output of the compilation process is "mutex1_bad.s".
+
+gcc -S mutex1_bad.c
+
+
+6. An example of a bad programme, where delay is used to avoid races instead of mutexes. It is important to see what errors may be caused by such an approach.
+
+(a) very slow, but correct due to a sufficient time separation. The race conditions still exist, but are never realised. The program may fail on a slow computer or if a computer is busy with many other tasks.
+
+gcc bad_threads.c -o bad_threads
+./bad_threads
+
+(b) still slow, but also the errors due to race conditions are encouraged by the choice of the delay values. The result is totally unpredictable and different in different runs. The outputs "Hello Hello" or even "Hello Hello World" are possible due to corruption of data while executing "printf()".
+
+gcc bad_threads1.c -o bad_threads1
+./bad_threads1
+
+(c) This the code as listed in the lecture. In the modern versions of libraries sleep() suspends the current thread only and not the whole process (as written in the lecture notes). Therefore, the experiment yields in the same result as (b).
+
+ gcc bad_threads2.c -o bad_threads2
+./bad_threads2
+
+7. Experiments on fairness. The concurrent threads of the same performance are expected to produce the outputs which are well mixed, i.e. 112122121222211212... This, however, does not happen due to constraints imposed by the operating system scheduler.
+
+(a) unfair arbiter example
+
+gcc mutex_unfair.c -lpthread -o mutex_unfair
+./mutex_unfair
+
+(b) Fairness improvement by introducing a delay. This delay makes the main assumption leading to the unfairness invalid -- the assumption of one thread being very fast and the other very slow. Both are slow in this example.
+
+gcc mutex_fair.c -lpthread -o mutex_fair
+./mutex_fair
+
+8. Condition variables. See how they work, try to modify the programme in order to validate our Petri net model in the lecture notes.
+
+gcc cond1.c -lpthread -o cond1
+./cond1
